@@ -1,6 +1,7 @@
 use vec3::Vec3;
 use vec3::Scalar;
 
+#[derive(Copy,Clone)]
 pub struct Ray {
     pub origin: Vec3,
     pub direction: Vec3,

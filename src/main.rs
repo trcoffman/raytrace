@@ -17,11 +17,29 @@ use camera::*;
 use std::vec::Vec;
 use std::boxed::Box;
 
+fn random_in_unit_sphere_helper() -> Vec3 {
+
+    &(Scalar(2.0) * &Vec3::new(randBetween0and1(), randBetween0and1(), randBetween0and1())) - &Vec3::new(1.0, 1.0, 1.0)
+}
+
+fn random_in_unit_sphere() -> Vec3 {
+
+    let mut done = false;
+    let mut p = random_in_unit_sphere_helper();
+    while dot(&p, &p) >= 1.0 {
+        p = random_in_unit_sphere_helper();
+    }
+    p
+}
 
 fn color(ray: &Ray, world: &Hitable) -> Vec3 {
 
     match world.hit(ray, 0.0, std::f32::MAX) {
-        Some(record) => Scalar(0.5) * &(Scalar(1.0) + &record.normal),
+        Some(record) => {
+            let target = &(&record.p + &record.normal) + &random_in_unit_sphere();
+            //Scalar(0.5) * &(Scalar(1.0) + &record.normal)
+            Scalar(0.5) * &color(&Ray::new(record.p, &target - &record.p), world) 
+        },
         None => {
             // Background
             let t = 0.5 * (ray.direction.y + 1.0);
@@ -33,6 +51,32 @@ fn color(ray: &Ray, world: &Hitable) -> Vec3 {
     }
 }
 
+fn color_iterating(iray: &Ray, world: &Hitable) -> Vec3 {
+
+    let mut col = Vec3::new(1.0, 1.0, 1.0);
+    let mut done = false;
+    let mut ray = iray;
+    while !done {
+        match world.hit(ray, 0.0, std::f32::MAX) {
+            Some(record) => {
+                let target = &(&record.p + &record.normal) + &random_in_unit_sphere();
+                ray = Ray::new(record.p, &target - &record.p);
+                //Scalar(0.5) * &color(&Ray::new(record.p, &target - &record.p), world) 
+                col = 
+            },
+            None => {
+                // Background
+                let t = 0.5 * (ray.direction.y + 1.0);
+                let white = Vec3::new(1.0, 1.0, 1.0);
+                let blue = Vec3::new(0.5, 0.7, 1.0);
+                // Linear interpolation between white and blue
+                done = true;
+                &(Scalar(1.0 - t) * &white) + &(Scalar(t) * &blue)
+            },
+        }
+    }
+    col
+}
 fn randBetween0and1() -> f32 {
 
     let between = Range::new(0.0, 1.0);
@@ -40,6 +84,7 @@ fn randBetween0and1() -> f32 {
 
     between.ind_sample(&mut rng)
 }
+
 fn raytrace<'a, 'b, 'c, 'd>(
         world: &Hitable,
         nx: u32,
@@ -58,7 +103,7 @@ fn raytrace<'a, 'b, 'c, 'd>(
 
             // Multi sample anti aliasing
             let mut col = Vec3::new(0.0, 0.0, 0.0);
-            for s in (0..ns) {
+            for s in 0..ns {
                 let u = (i + randBetween0and1()) / nx;
                 let v = (j + randBetween0and1()) / ny;
                 let ray = camera.get_ray(u, v);
@@ -76,9 +121,9 @@ fn raytrace<'a, 'b, 'c, 'd>(
 
 fn main() {
 
-    let nx = 1000;
-    let ny = 500;
-    let ns = 20; // number of samples to take per pixel
+    let nx = 200;
+    let ny = 100;
+    let ns = 2; // number of samples to take per pixel
     
     let origin = Vec3::new(0.0, 0.0, 0.0);
     let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
