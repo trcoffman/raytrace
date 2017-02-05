@@ -33,12 +33,20 @@ fn random_in_unit_sphere() -> Vec3 {
 }
 
 fn color(ray: &Ray, world: &Hitable) -> Vec3 {
+    color_limited(ray, world, 0)
+}
 
-    match world.hit(ray, 0.0, std::f32::MAX) {
+fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
+
+    let hitResult = if depth < 100 {
+        world.hit(ray, 0.0, std::f32::MAX)
+    } else {
+        None
+    };
+    match hitResult {
         Some(record) => {
             let target = &(&record.p + &record.normal) + &random_in_unit_sphere();
-            //Scalar(0.5) * &(Scalar(1.0) + &record.normal)
-            Scalar(0.5) * &color(&Ray::new(record.p, &target - &record.p), world) 
+            Scalar(0.5) * &color_limited(&Ray::new(record.p, &target - &record.p), world, depth+1) 
         },
         None => {
             // Background
@@ -51,32 +59,6 @@ fn color(ray: &Ray, world: &Hitable) -> Vec3 {
     }
 }
 
-fn color_iterating(iray: &Ray, world: &Hitable) -> Vec3 {
-
-    let mut col = Vec3::new(1.0, 1.0, 1.0);
-    let mut done = false;
-    let mut ray = iray;
-    while !done {
-        match world.hit(ray, 0.0, std::f32::MAX) {
-            Some(record) => {
-                let target = &(&record.p + &record.normal) + &random_in_unit_sphere();
-                ray = Ray::new(record.p, &target - &record.p);
-                //Scalar(0.5) * &color(&Ray::new(record.p, &target - &record.p), world) 
-                col = 
-            },
-            None => {
-                // Background
-                let t = 0.5 * (ray.direction.y + 1.0);
-                let white = Vec3::new(1.0, 1.0, 1.0);
-                let blue = Vec3::new(0.5, 0.7, 1.0);
-                // Linear interpolation between white and blue
-                done = true;
-                &(Scalar(1.0 - t) * &white) + &(Scalar(t) * &blue)
-            },
-        }
-    }
-    col
-}
 fn randBetween0and1() -> f32 {
 
     let between = Range::new(0.0, 1.0);
@@ -121,9 +103,9 @@ fn raytrace<'a, 'b, 'c, 'd>(
 
 fn main() {
 
-    let nx = 200;
-    let ny = 100;
-    let ns = 2; // number of samples to take per pixel
+    let nx = 1000;
+    let ny = 500;
+    let ns = 20; // number of samples to take per pixel
     
     let origin = Vec3::new(0.0, 0.0, 0.0);
     let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
