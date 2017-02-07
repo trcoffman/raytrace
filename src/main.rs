@@ -1,4 +1,5 @@
 extern crate rand;
+extern crate rayon;
 
 pub mod vec3;
 pub mod ray;
@@ -13,6 +14,7 @@ use sphere::*;
 use hitable::*;
 use ray::*;
 use camera::*;
+use rayon::prelude::*;
 
 use std::vec::Vec;
 use std::boxed::Box;
@@ -84,12 +86,13 @@ fn raytrace<'a, 'b, 'c, 'd>(
             let nx = nx as f32; // Shadow nx as f32
 
             // Multi sample anti aliasing, this time with iterators
-            let colSum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, elem| {
+            let colSum: Vec3 = (0..ns).into_par_iter().map(|ignore| {
                 let u = (i + randBetween0and1()) / nx;
                 let v = (j + randBetween0and1()) / ny;
                 let ray = camera.get_ray(u, v);
-                let col = color(&ray, world); 
-                &sum + &col
+                color(&ray, world) 
+            }).reduce(|| Vec3::new(0.0, 0.0, 0.0), |sum, elem| {;
+                &sum + &elem
             });
             let colAvg = Scalar(1.0 / (ns as f32)) * &colSum;
 
