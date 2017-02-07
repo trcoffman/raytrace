@@ -38,7 +38,7 @@ fn color(ray: &Ray, world: &Hitable) -> Vec3 {
 
 fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
 
-    let hitResult = if depth < 100 {
+    let hitResult = if depth < 20 {
         world.hit(ray, 0.001, std::f32::MAX)
     } else {
         None
@@ -108,7 +108,7 @@ fn main() {
 
     let nx = 1000;
     let ny = 500;
-    let ns = 20; // number of samples to take per pixel
+    let ns = 200; // number of samples to take per pixel
     
     let origin = Vec3::new(0.0, 0.0, 0.0);
     let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
