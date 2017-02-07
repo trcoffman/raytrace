@@ -22,7 +22,7 @@ impl HitRecord {
     }
 }
 
-pub trait Hitable {
+pub trait Hitable: Send + Sync {
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord>;
 }
 
