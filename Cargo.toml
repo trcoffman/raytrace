@@ -5,3 +5,4 @@ authors = ["tylercoffman"]
 
 [dependencies]
 rand = "0.3.13"
+rayon = "0.6.0"
