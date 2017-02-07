@@ -39,7 +39,7 @@ fn color(ray: &Ray, world: &Hitable) -> Vec3 {
 fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
 
     let hitResult = if depth < 100 {
-        world.hit(ray, 0.0, std::f32::MAX)
+        world.hit(ray, 0.001, std::f32::MAX)
     } else {
         None
     };
