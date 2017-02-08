@@ -1,36 +1,19 @@
-extern crate rand;
-
 pub mod vec3;
 pub mod ray;
 pub mod sphere;
 pub mod hitable;
 pub mod camera;
-
-use rand::distributions::{IndependentSample, Range};
+pub mod random;
 
 use vec3::*;
 use sphere::*;
 use hitable::*;
 use ray::*;
 use camera::*;
+use random::*;
 
 use std::vec::Vec;
 use std::boxed::Box;
-
-fn random_in_unit_sphere_helper() -> Vec3 {
-
-    &(Scalar(2.0) * &Vec3::new(randBetween0and1(), randBetween0and1(), randBetween0and1())) - &Vec3::new(1.0, 1.0, 1.0)
-}
-
-fn random_in_unit_sphere() -> Vec3 {
-
-    let mut done = false;
-    let mut p = random_in_unit_sphere_helper();
-    while dot(&p, &p) >= 1.0 {
-        p = random_in_unit_sphere_helper();
-    }
-    p
-}
 
 fn color(ray: &Ray, world: &Hitable) -> Vec3 {
     color_limited(ray, world, 0)
@@ -57,14 +40,6 @@ fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
             &(Scalar(1.0 - t) * &white) + &(Scalar(t) * &blue)
         },
     }
-}
-
-fn randBetween0and1() -> f32 {
-
-    let between = Range::new(0.0, 1.0);
-    let mut rng = rand::thread_rng();
-
-    between.ind_sample(&mut rng)
 }
 
 fn raytrace<'a, 'b, 'c, 'd>(
