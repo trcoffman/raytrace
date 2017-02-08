@@ -50,7 +50,7 @@ fn raytrace<'a, 'b, 'c, 'd>(
         camera: &Camera) {
 
     println!("P3\n{} {}\n255", nx, ny);
-    for j in (0..ny).rev() {
+    let rows: Vec<Vec<(i32, i32, i32)>> = (0..ny).rev().map(|j| {
         let row: Vec<(i32, i32, i32)> = (0..nx).map(|i| {
 
             // Multi sample anti aliasing, this time with iterators
@@ -69,6 +69,9 @@ fn raytrace<'a, 'b, 'c, 'd>(
             let ib = (255.99 * col.z) as i32;
             (ir, ig, ib)
         }).collect();
+        row
+    }).collect();
+    for row in rows.iter() {
         for pixel in row.iter() {
             println!("{} {} {}", pixel.0, pixel.1, pixel.2);
         }
