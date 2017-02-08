@@ -51,18 +51,11 @@ fn raytrace<'a, 'b, 'c, 'd>(
 
     println!("P3\n{} {}\n255", nx, ny);
     for j in (0..ny).rev() {
-        let j = j as f32; // Shadow j as f32
-        let ny = ny as f32; // Shadow ny as f32
-
         for i in 0..nx {
-            let i = i as f32; // Shadow i as f32
-            let nx = nx as f32; // Shadow nx as f32
 
             // Multi sample anti aliasing, this time with iterators
             let colSum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, elem| {
-                let u = (i + randBetween0and1()) / nx;
-                let v = (j + randBetween0and1()) / ny;
-                let ray = camera.get_ray(u, v);
+                let ray = camera.get_randomized_ray(i, nx, j, ny);
                 let col = color(&ray, world); 
                 &sum + &col
             });

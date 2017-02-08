@@ -1,6 +1,7 @@
 
 use ray::*;
 use vec3::*;
+use random::*;
 
 pub struct Camera {
     pub origin: Vec3,
@@ -30,5 +31,15 @@ impl Camera {
         Ray::new(self.origin, direction)
     }
    
+   pub fn get_randomized_ray(&self, x: u32, nx: u32, y: u32, ny:u32) -> Ray {
+       self.get_randomized_ray_impl(x as f32, nx as f32, y as f32, ny as f32)
+   }
+
+   pub fn get_randomized_ray_impl(&self, x: f32, nx: f32, y: f32, ny:f32) -> Ray {
+
+       let u = (x + randBetween0and1()) / nx;
+       let v = (y + randBetween0and1()) / ny;
+       self.get_ray(u, v)
+   }
 }
 
