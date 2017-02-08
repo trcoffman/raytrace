@@ -51,7 +51,7 @@ fn raytrace<'a, 'b, 'c, 'd>(
 
     println!("P3\n{} {}\n255", nx, ny);
     for j in (0..ny).rev() {
-        for i in 0..nx {
+        let row: Vec<(i32, i32, i32)> = (0..nx).map(|i| {
 
             // Multi sample anti aliasing, this time with iterators
             let colSum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, elem| {
@@ -67,9 +67,13 @@ fn raytrace<'a, 'b, 'c, 'd>(
             let ir = (255.99 * col.x) as i32;
             let ig = (255.99 * col.y) as i32;
             let ib = (255.99 * col.z) as i32;
-            println!("{} {} {}", ir, ig, ib);
+            (ir, ig, ib)
+        }).collect();
+        for pixel in row.iter() {
+            println!("{} {} {}", pixel.0, pixel.1, pixel.2);
         }
     }
+
 }
 
 fn main() {
