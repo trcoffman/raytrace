@@ -1,3 +1,5 @@
+extern crate rayon;
+
 pub mod vec3;
 pub mod ray;
 pub mod sphere;
@@ -11,6 +13,8 @@ use hitable::*;
 use ray::*;
 use camera::*;
 use random::*;
+
+use rayon::prelude::*;
 
 use std::vec::Vec;
 use std::boxed::Box;
@@ -50,8 +54,8 @@ fn raytrace<'a, 'b, 'c, 'd>(
         camera: &Camera) {
 
     println!("P3\n{} {}\n255", nx, ny);
-    let rows: Vec<Vec<(i32, i32, i32)>> = (0..ny).rev().map(|j| {
-        let row: Vec<(i32, i32, i32)> = (0..nx).map(|i| {
+    let rows: Vec<Vec<(i32, i32, i32)>> = (0..ny).into_par_iter().weight_max().map(|j| {
+        (0..nx).map(|i| -> (i32, i32, i32) {
 
             // Multi sample anti aliasing, this time with iterators
             let colSum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, elem| {
@@ -64,14 +68,10 @@ fn raytrace<'a, 'b, 'c, 'd>(
             // Gamma correction.
             let col = Vec3::new(colAvg.x.sqrt(), colAvg.y.sqrt(), colAvg.z.sqrt());
 
-            let ir = (255.99 * col.x) as i32;
-            let ig = (255.99 * col.y) as i32;
-            let ib = (255.99 * col.z) as i32;
-            (ir, ig, ib)
-        }).collect();
-        row
+            ((255.99 * col.x) as i32, (255.99 * col.y) as i32, (255.99 * col.z) as i32)
+        }).collect()
     }).collect();
-    for row in rows.iter() {
+    for row in rows.iter().rev() {
         for pixel in row.iter() {
             println!("{} {} {}", pixel.0, pixel.1, pixel.2);
         }
