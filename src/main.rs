@@ -27,15 +27,19 @@ fn color(ray: &Ray, world: &Hitable) -> Vec3 {
 
 fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
 
-    let hitResult = if depth < 20 {
+    let hitResult = if depth < 50 {
         world.hit(ray, 0.001, std::f32::MAX)
     } else {
         None
     };
     match hitResult {
         Some(record) => {
-            let target = &(&record.p + &record.normal) + &random_in_unit_sphere();
-            Scalar(0.5) * &color_limited(&Ray::new(record.p, &target - &record.p), world, depth+1) 
+            // TODO: could this be refactored to be part of the hit record? just an option with attenuation
+            // and a ray?
+            match record.material.scatter(ray, &record) {
+                Some((attenuation, target)) => &attenuation * &color_limited(&target, world, depth+1),
+                None => Vec3::new(0.0, 0.0, 0.0)
+            }
         },
         None => {
             // Background
