@@ -98,10 +98,14 @@ fn main() {
 
     let camera = Camera::new(origin, lower_left_corner, horizontal, vertical);
 
-    let matte_grey = Lambertian::new(Vec3::new(0.5, 0.5, 0.5));
+    let pink = Lambertian::new(Vec3::new(0.8, 0.3, 0.3));
+    let yellow_green = Lambertian::new(Vec3::new(0.8, 0.8, 0.0));
+    let shiny_metal = Metal::new(Vec3::new(0.8, 0.8, 0.8));
     let world: Vec<Box<Hitable>> = vec! [
-        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &matte_grey)),
-        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0, &matte_grey)),
+        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0, &yellow_green)),
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &pink)),
+        Box::new(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, &shiny_metal)),
+        Box::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &shiny_metal)),
     ];
     
     raytrace(&world, nx, ny, ns, &camera);
