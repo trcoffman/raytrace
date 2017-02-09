@@ -48,7 +48,7 @@ fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
     }
 }
 
-fn raytrace<'a, 'b, 'c, 'd>(
+fn raytrace(
         world: &Hitable,
         nx: u32,
         ny: u32,
@@ -60,7 +60,7 @@ fn raytrace<'a, 'b, 'c, 'd>(
         (0..nx).map(|i| -> (i32, i32, i32) {
 
             // Multi sample anti aliasing, this time with iterators
-            let colSum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, elem| {
+            let colSum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, _| {
                 let ray = camera.get_randomized_ray(i, nx, j, ny);
                 let col = color(&ray, world); 
                 &sum + &col

@@ -19,7 +19,6 @@ pub fn random_in_unit_sphere_helper() -> Vec3 {
 
 pub fn random_in_unit_sphere() -> Vec3 {
 
-    let mut done = false;
     let mut p = random_in_unit_sphere_helper();
     while dot(&p, &p) >= 1.0 {
         p = random_in_unit_sphere_helper();

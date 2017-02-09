@@ -1,5 +1,3 @@
-use std::boxed::Box;
-
 use hitable::*;
 use vec3::*;
 use ray::*;

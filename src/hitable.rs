@@ -2,7 +2,6 @@ use std::vec::Vec;
 use std::boxed::Box;
 
 use vec3::Vec3;
-use vec3::Scalar;
 use ray::Ray;
 use material::Material;
 
@@ -34,7 +33,6 @@ impl<'c> Hitable for Vec<Box<Hitable + 'c>> {
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord> {
 
         let mut closestSoFar = tMax;
-        let mut hitAnything = false;
         let mut record: Option<HitRecord> = None;
 
         for hitableBox in self.iter() {
@@ -43,7 +41,6 @@ impl<'c> Hitable for Vec<Box<Hitable + 'c>> {
                     // TODO: improve this code rather than blindly use what's in the book
                     let t = tempRecord.t;
                     if tMin <= t && t <= tMax {
-                        hitAnything = true;
                         if t < closestSoFar {
                             closestSoFar = t;
                             record = Some(tempRecord);
