@@ -29,7 +29,7 @@ pub trait Hitable: Send + Sync {
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord<'a>>;
 }
 
-impl Hitable for Vec<Box<Hitable>> {
+impl<'c> Hitable for Vec<Box<Hitable + 'c>> {
 
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord> {
 
