@@ -6,6 +6,7 @@ pub mod sphere;
 pub mod hitable;
 pub mod camera;
 pub mod random;
+pub mod material;
 
 use vec3::*;
 use sphere::*;
@@ -13,6 +14,7 @@ use hitable::*;
 use ray::*;
 use camera::*;
 use random::*;
+use material::*;
 
 use rayon::prelude::*;
 
@@ -92,9 +94,10 @@ fn main() {
 
     let camera = Camera::new(origin, lower_left_corner, horizontal, vertical);
 
+    let matte_grey = Lambertian::new(Vec3::new(0.5, 0.5, 0.5));
     let world: Vec<Box<Hitable>> = vec! [
-        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)),
-        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)),
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &matte_grey)),
+        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0, &matte_grey)),
     ];
     
     raytrace(&world, nx, ny, ns, &camera);

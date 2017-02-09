@@ -1,23 +1,27 @@
+use std::boxed::Box;
 
 use hitable::*;
 use vec3::*;
 use ray::*;
+use material::Material;
 
-pub struct Sphere {
+pub struct Sphere<'a> {
     pub center: Vec3,
     pub radius: f32,
+    pub material: &'a Material,
 }
 
-impl Sphere {
-    pub fn new(center: Vec3, radius: f32) -> Sphere {
+impl<'a> Sphere<'a> {
+    pub fn new(center: Vec3, radius: f32, material: &'a Material) -> Sphere {
         Sphere {
             center: center,
             radius: radius,
+            material: material,
         }
     }
 }
 
-impl Hitable for Sphere {
+impl<'s> Hitable for Sphere<'s> {
 
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord> {
 
@@ -36,7 +40,7 @@ impl Hitable for Sphere {
                 let p = ray.point_at(t);
                 let normal = Scalar(1.0 / self.radius) * &(&p- &self.center);
 
-                return Some(HitRecord::new(t, p, normal));
+                return Some(HitRecord::new(t, p, normal, self.material));
             }
             tPlus = (-b + discriminant.sqrt()) / (2.0 * a);
             if tPlus >= tMin && tPlus <= tMax {
@@ -44,7 +48,7 @@ impl Hitable for Sphere {
                 let p = ray.point_at(t);
                 let normal = Scalar(1.0 / self.radius) * &(&p- &self.center);
 
-                return Some(HitRecord::new(t, p, normal));
+                return Some(HitRecord::new(t, p, normal, self.material));
             }
         } 
 
