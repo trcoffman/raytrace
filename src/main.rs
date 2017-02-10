@@ -89,7 +89,7 @@ fn main() {
     let ny = 500;
     let ns = 200; // number of samples to take per pixel
     
-    let origin = Vec3::new(0.0, 0.0, 0.0);
+    let origin = Vec3::new(0.0, 0.0, 5.0);
     let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
     let horizontal = Vec3::new(4.0, 0.0, 0.0);
     let vertical = Vec3::new(0.0, 2.0, 0.0);
@@ -97,12 +97,13 @@ fn main() {
     let camera = Camera::new(origin, lower_left_corner, horizontal, vertical);
 
     let pink = Lambertian::new(Vec3::new(0.8, 0.3, 0.3));
+    let purple = Lambertian::new(Vec3::new(0.55, 0.0, 0.55));
     let yellow_green = Lambertian::new(Vec3::new(0.8, 0.8, 0.0));
     let shiny_metal = Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.1);
     let dull_metal = Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0);
     let world: Vec<Box<Hitable>> = vec! [
         Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0, &yellow_green)),
-        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &pink)),
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &purple)),
         Box::new(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, &shiny_metal)),
         Box::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &dull_metal)),
     ];
