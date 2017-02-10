@@ -27,12 +27,10 @@ fn color(ray: &Ray, world: &Hitable) -> Vec3 {
 
 fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
 
-    let hitResult = if depth < 50 {
-        world.hit(ray, 0.001, std::f32::MAX)
-    } else {
-        None
-    };
-    match hitResult {
+    if depth > 50 {
+        return Vec3::new(0.0, 0.0, 0.0)
+    }
+    match world.hit(ray, 0.001, std::f32::MAX) {
         Some(record) => {
             // TODO: could this be refactored to be part of the hit record? just an option with attenuation
             // and a ray?
