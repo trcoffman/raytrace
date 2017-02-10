@@ -98,12 +98,13 @@ fn main() {
 
     let pink = Lambertian::new(Vec3::new(0.8, 0.3, 0.3));
     let yellow_green = Lambertian::new(Vec3::new(0.8, 0.8, 0.0));
-    let shiny_metal = Metal::new(Vec3::new(0.8, 0.8, 0.8));
+    let shiny_metal = Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.1);
+    let dull_metal = Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0);
     let world: Vec<Box<Hitable>> = vec! [
         Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0, &yellow_green)),
         Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &pink)),
         Box::new(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, &shiny_metal)),
-        Box::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &shiny_metal)),
+        Box::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &dull_metal)),
     ];
     
     raytrace(&world, nx, ny, ns, &camera);
