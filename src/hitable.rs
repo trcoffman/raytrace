@@ -2,7 +2,6 @@ use std::vec::Vec;
 use std::boxed::Box;
 
 use vec3::Vec3;
-use vec3::Scalar;
 use ray::Ray;
 
 pub struct HitRecord {
@@ -12,7 +11,6 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-
     pub fn new(t: f32, p: Vec3, normal: Vec3) -> HitRecord {
         HitRecord {
             t: t,
@@ -23,30 +21,28 @@ impl HitRecord {
 }
 
 pub trait Hitable: Send + Sync {
-    fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord>;
+    fn hit<'a, 'b>(&'a self, ray: &'b Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
 
 impl Hitable for Vec<Box<Hitable>> {
+    fn hit<'a, 'b>(&'a self, ray: &'b Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
 
-    fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord> {
-
-        let mut closestSoFar = tMax;
-        let mut hitAnything = false;
+        let mut closest_so_far = t_max;
         let mut record: Option<HitRecord> = None;
 
-        for hitableBox in self.iter() {
-            match hitableBox.hit(ray, tMin, tMax) {
-                Some(tempRecord) => {
+        for hitable_box in self.iter() {
+            match hitable_box.hit(ray, t_min, t_max) {
+                Some(temp_record) => {
                     // TODO: improve this code rather than blindly use what's in the book
-                    let t = tempRecord.t;
-                    if tMin <= t && t <= tMax {
-                        hitAnything = true;
-                        if t < closestSoFar {
-                            closestSoFar = t;
-                            record = Some(tempRecord);
+                    let t = temp_record.t;
+                    if t_min <= t && t <= t_max {
+                        // Something was hit.
+                        if t < closest_so_far {
+                            closest_so_far = t;
+                            record = Some(temp_record);
                         }
                     }
-                },
+                }
                 None => (),
             }
         }

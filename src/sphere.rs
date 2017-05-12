@@ -18,8 +18,7 @@ impl Sphere {
 }
 
 impl Hitable for Sphere {
-
-    fn hit<'a, 'b>(&'a self, ray: &'b Ray, tMin: f32, tMax: f32) -> Option<HitRecord> {
+    fn hit<'a, 'b>(&'a self, ray: &'b Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
 
         let oc = &ray.origin - &self.center;
         let a = dot(&ray.direction, &ray.direction);
@@ -29,24 +28,24 @@ impl Hitable for Sphere {
 
         if discriminant > 0.0 {
             // quadratic formula
-            let tMinus = (-b - discriminant.sqrt()) / (2.0 * a);
-            let tPlus: f32;
-            if tMinus >= tMin && tMinus <= tMax {
-                let t = tMinus;
+            let t_minus = (-b - discriminant.sqrt()) / (2.0 * a);
+            let t_plus: f32;
+            if t_minus >= t_min && t_minus <= t_max {
+                let t = t_minus;
                 let p = ray.point_at(t);
-                let normal = Scalar(1.0 / self.radius) * &(&p- &self.center);
+                let normal = Scalar(1.0 / self.radius) * &(&p - &self.center);
 
                 return Some(HitRecord::new(t, p, normal));
             }
-            tPlus = (-b + discriminant.sqrt()) / (2.0 * a);
-            if tPlus >= tMin && tPlus <= tMax {
-                let t = tPlus;
+            t_plus = (-b + discriminant.sqrt()) / (2.0 * a);
+            if t_plus >= t_min && t_plus <= t_max {
+                let t = t_plus;
                 let p = ray.point_at(t);
-                let normal = Scalar(1.0 / self.radius) * &(&p- &self.center);
+                let normal = Scalar(1.0 / self.radius) * &(&p - &self.center);
 
                 return Some(HitRecord::new(t, p, normal));
             }
-        } 
+        }
 
         None
     }
