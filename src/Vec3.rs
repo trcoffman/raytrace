@@ -29,9 +29,7 @@ impl Vec3 {
     }
 }
 
-// TODO: perhaps optimize by returning references?
-
-impl<'a> Neg for &'a Vec3 {
+impl<'a> Neg for Vec3 {
     type Output = Vec3;
 
     fn neg(self) -> Vec3 {
@@ -39,55 +37,55 @@ impl<'a> Neg for &'a Vec3 {
     }
 }
 
-impl<'a, 'b> Add<&'b Vec3> for &'a Vec3 {
+impl Add<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn add(self, other: &'b Vec3) -> Vec3 {
+    fn add(self, other: Vec3) -> Vec3 {
         Vec3::new(self.x + other.x, self.y + other.y, self.z + other.z)
     }
 }
 
-impl<'a, 'b> Sub<&'b Vec3> for &'a Vec3 {
+impl Sub<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn sub(self, other: &'b Vec3) -> Vec3 {
+    fn sub(self, other: Vec3) -> Vec3 {
         Vec3::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 }
 
-impl<'a, 'b> Mul<&'b Vec3> for &'a Vec3 {
+impl Mul<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn mul(self, other: &'b Vec3) -> Vec3 {
+    fn mul(self, other: Vec3) -> Vec3 {
         Vec3::new(self.x * other.x, self.y * other.y, self.z * other.z)
     }
 }
 
-impl<'a, 'b> Div<&'b Vec3> for &'a Vec3 {
+impl Div<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn div(self, other: &'b Vec3) -> Vec3 {
+    fn div(self, other: Vec3) -> Vec3 {
         Vec3::new(self.x / other.x, self.y / other.y, self.z / other.z)
     }
 }
 
-pub fn dot(v1: &Vec3, v2: &Vec3) -> f32 {
+pub fn dot(v1: Vec3, v2: Vec3) -> f32 {
     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 }
 
-impl<'a> Add<&'a Vec3> for Scalar {
+impl Add<Vec3> for Scalar {
     type Output = Vec3;
 
-    fn add(self, other: &'a Vec3) -> Vec3 {
+    fn add(self, other: Vec3) -> Vec3 {
         let Scalar(value) = self;
         Vec3::new(value + other.x, value + other.y, value + other.z)
     }
 }
 
-impl<'a> Mul<&'a Vec3> for Scalar {
+impl Mul<Vec3> for Scalar {
     type Output = Vec3;
 
-    fn mul(self, other: &'a Vec3) -> Vec3 {
+    fn mul(self, other: Vec3) -> Vec3 {
         let Scalar(value) = self;
         Vec3::new(value * other.x, value * other.y, value * other.z)
     }

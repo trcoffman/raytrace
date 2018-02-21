@@ -19,8 +19,8 @@ impl Lambertian {
 
 impl Material for Lambertian {
     fn scatter(&self, _: &Ray, record: &HitRecord) -> Option<(Vec3, Ray)> {
-        let scatter_direction = &(&record.p + &record.normal) + &random_in_unit_sphere();
-        let scattered_ray = Ray::new(record.p, &scatter_direction - &record.p);
+        let scatter_direction = (record.p + record.normal) + random_in_unit_sphere();
+        let scattered_ray = Ray::new(record.p, scatter_direction - record.p);
         Some((self.albedo, scattered_ray))
     }
 }
@@ -38,17 +38,17 @@ impl Metal {
         }
     }
 
-    fn reflect(&self, v: &Vec3, n: &Vec3) -> Vec3 {
-        v - &(Scalar(2.0 * dot(v, n)) * n)
+    fn reflect(&self, v: Vec3, n: Vec3) -> Vec3 {
+        v - (Scalar(2.0 * dot(v, n)) * n)
     }
 }
 
 impl Material for Metal {
     fn scatter(&self, ray_in: &Ray, record: &HitRecord) -> Option<(Vec3, Ray)> {
-        let reflected = self.reflect(&ray_in.direction.make_unit(), &record.normal.make_unit());
-        let fuzzed_reflected = &reflected + &(Scalar(self.fuzz) * &random_in_unit_sphere());
+        let reflected = self.reflect(ray_in.direction.make_unit(), record.normal.make_unit());
+        let fuzzed_reflected = reflected + (Scalar(self.fuzz) * random_in_unit_sphere());
         let scattered_ray = Ray::new(record.p, fuzzed_reflected);
-        if dot(&scattered_ray.direction, &record.normal) > 0.0 {
+        if dot(scattered_ray.direction, record.normal) > 0.0 {
             Some((self.albedo, scattered_ray))
         } else {
             None

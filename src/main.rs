@@ -34,7 +34,7 @@ fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
             // attenuation and a ray?
             match record.material.scatter(ray, &record) {
                 Some((attenuation, target)) => {
-                    &attenuation * &color_limited(&target, world, depth + 1)
+                    attenuation * color_limited(&target, world, depth + 1)
                 }
                 None => Vec3::new(0.0, 0.0, 0.0),
             }
@@ -45,7 +45,7 @@ fn color_limited(ray: &Ray, world: &Hitable, depth: u32) -> Vec3 {
             let white = Vec3::new(1.0, 1.0, 1.0);
             let blue = Vec3::new(0.5, 0.7, 1.0);
             // Linear interpolation between white and blue
-            &(Scalar(1.0 - t) * &white) + &(Scalar(t) * &blue)
+            (Scalar(1.0 - t) * white) + (Scalar(t) * blue)
         }
     }
 }
@@ -62,9 +62,9 @@ fn raytrace(world: &Hitable, nx: u32, ny: u32, ns: u32, camera: &Camera) {
                     let col_sum: Vec3 = (0..ns).fold(Vec3::new(0.0, 0.0, 0.0), |sum, _| {
                         let ray = camera.get_randomized_ray(i, nx, j, ny);
                         let col = color(&ray, world);
-                        &sum + &col
+                        sum + col
                     });
-                    let col_avg = Scalar(1.0 / (ns as f32)) * &col_sum;
+                    let col_avg = Scalar(1.0 / (ns as f32)) * col_sum;
 
                     // Gamma correction.
                     let col = Vec3::new(col_avg.x.sqrt(), col_avg.y.sqrt(), col_avg.z.sqrt());
