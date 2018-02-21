@@ -29,7 +29,6 @@ pub trait Hitable: Send + Sync {
 
 impl<'c> Hitable for Vec<Box<Hitable + 'c>> {
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-
         let mut closest_so_far = t_max;
         let mut record: Option<HitRecord> = None;
 

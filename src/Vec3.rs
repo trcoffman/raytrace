@@ -1,13 +1,13 @@
 use std::ops::*;
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
 }
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub struct Scalar(pub f32);
 
 impl Vec3 {
@@ -72,7 +72,6 @@ impl<'a, 'b> Div<&'b Vec3> for &'a Vec3 {
 }
 
 pub fn dot(v1: &Vec3, v2: &Vec3) -> f32 {
-
     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 }
 

@@ -21,7 +21,6 @@ impl<'a> Sphere<'a> {
 
 impl<'s> Hitable for Sphere<'s> {
     fn hit<'a, 'b>(&'a self, ray: &'b Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-
         let oc = &ray.origin - &self.center;
         let a = dot(&ray.direction, &ray.direction);
         let b = 2.0 * dot(&oc, &ray.direction);
